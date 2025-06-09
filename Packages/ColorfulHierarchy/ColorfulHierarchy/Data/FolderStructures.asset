@@ -1,0 +1,89 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f50de21d0d54b2848a831f45c99527d0, type: 3}
+  m_Name: FolderStructures
+  m_EditorClassIdentifier: 
+  Structures:
+  - Title: Palapal
+    Folders:
+    - Name: Debug
+      Design:
+        textColor: {r: 1, g: 1, b: 1, a: 1}
+        backgroundColor: {r: 0.87843144, g: 0.20000002, b: 0.18039216, a: 1}
+        textAlignment: 4
+        fontStyle: 1
+        fontSize: 12
+      SubFolders: []
+    - Name: Managers
+      Design:
+        textColor: {r: 1, g: 1, b: 1, a: 1}
+        backgroundColor: {r: 0.9607844, g: 0.5882353, b: 0.2392157, a: 1}
+        textAlignment: 4
+        fontStyle: 1
+        fontSize: 12
+      SubFolders: []
+    - Name: UIs
+      Design:
+        textColor: {r: 1, g: 1, b: 1, a: 1}
+        backgroundColor: {r: 0.45098042, g: 0.40000004, b: 0.011764707, a: 1}
+        textAlignment: 4
+        fontStyle: 1
+        fontSize: 12
+      SubFolders: []
+    - Name: Player
+      Design:
+        textColor: {r: 1, g: 1, b: 1, a: 1}
+        backgroundColor: {r: 0.21176472, g: 0.7490196, b: 0.43921572, a: 1}
+        textAlignment: 4
+        fontStyle: 1
+        fontSize: 12
+      SubFolders: []
+    - Name: Lights
+      Design:
+        textColor: {r: 1, g: 1, b: 1, a: 1}
+        backgroundColor: {r: 0.3019608, g: 0.7490196, b: 0.7019608, a: 1}
+        textAlignment: 4
+        fontStyle: 1
+        fontSize: 12
+      SubFolders: []
+    - Name: VFXs
+      Design:
+        textColor: {r: 1, g: 1, b: 1, a: 1}
+        backgroundColor: {r: 0.20000002, g: 0.56078434, b: 0.85098046, a: 1}
+        textAlignment: 4
+        fontStyle: 1
+        fontSize: 12
+      SubFolders: []
+    - Name: SFXs
+      Design:
+        textColor: {r: 1, g: 1, b: 1, a: 1}
+        backgroundColor: {r: 0.38823533, g: 0.45098042, b: 0.8000001, a: 1}
+        textAlignment: 4
+        fontStyle: 1
+        fontSize: 12
+      SubFolders: []
+    - Name: Environment
+      Design:
+        textColor: {r: 1, g: 1, b: 1, a: 1}
+        backgroundColor: {r: 0.5686275, g: 0.3803922, b: 0.87843144, a: 1}
+        textAlignment: 4
+        fontStyle: 1
+        fontSize: 12
+      SubFolders: []
+    - Name: GamePlays
+      Design:
+        textColor: {r: 1, g: 1, b: 1, a: 1}
+        backgroundColor: {r: 0.38823533, g: 0.45098042, b: 0.8000001, a: 1}
+        textAlignment: 4
+        fontStyle: 1
+        fontSize: 12
+      SubFolders: []

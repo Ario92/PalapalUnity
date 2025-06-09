@@ -1,0 +1,15 @@
+{
+    "name": "com.palapalco.ColorfulHierarchy",
+    "version": "0.0.1",
+    "displayName": "Colorful Hierarchy",
+    "description": "Create  colorfull hieraarchy",
+    "unity": "6000.0.47f1",
+    "author": {
+      "name": "Hosein Behrouzi",
+      "email": "h.behroozib4u@gmail.com"
+    },
+    "changelogUrl": "",
+    "documentationUrl": "",
+    "licensesUrl": ""
+  }
+  
