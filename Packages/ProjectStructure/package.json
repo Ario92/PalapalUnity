@@ -3,7 +3,7 @@
     "version": "0.0.1",
     "displayName": "Project Structure",
     "description": "Control the project structure",
-    "unity": "6000.0.47f1",
+    "unity": "6000.0",
     "author": {
       "name": "Asghar Golkar",
       "email": "golkar.asghar@gmail.com"
