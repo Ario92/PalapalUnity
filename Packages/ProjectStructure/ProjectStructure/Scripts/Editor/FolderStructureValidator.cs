@@ -1,4 +1,6 @@
 ﻿// Assets/Editor/FolderStructureValidator.cs
+#if UNITY_EDITOR
+
 using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
@@ -214,3 +216,4 @@ public class FolderStructureValidator : AssetPostprocessor
     }
   
 }
+#endif
