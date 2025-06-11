@@ -4,6 +4,9 @@
   "displayName": "Colorful Hierarchy",
   "description": "Create  colorfull hieraarchy",
   "unity": "6000.0",
+  "dependencies": {
+    "com.thissome1.colorful-hierarchy": "1.1.0"
+  },
   "author": {
     "name": "Hosein Behrouzi",
     "email": "h.behroozib4u@gmail.com"
