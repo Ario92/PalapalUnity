@@ -1,0 +1,15 @@
+{
+    "name": "com.palapalco.build_name_git_hash",
+    "version": "0.0.1",
+    "displayName": "Build Name with Git Hash",
+    "description": "Create a copy from the original build name and append the current Git hash.",
+    "unity": "6000.0",
+    "author": {
+      "name": "Asghar Golkar",
+      "email": "golkar.asghar@gmail.com"
+    },
+    "changelogUrl": "",
+    "documentationUrl": "",
+    "licensesUrl": "MIT License"
+  }
+  
