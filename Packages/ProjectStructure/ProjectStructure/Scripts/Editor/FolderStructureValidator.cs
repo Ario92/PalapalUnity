@@ -69,7 +69,7 @@ public class FolderStructureValidator : AssetPostprocessor
         // 1. بررسی وجود در فولدر ریشه معتبر
         if (string.IsNullOrEmpty(rootFolder) || !folderHierarchy.ContainsKey(rootFolder))
         {
-            Debug.LogError($"Asset '{assetPath}' is in an invalid root folder. Expected one of: {string.Join(", ", folderHierarchy.Keys)}");
+            LogWarning($"Asset '{assetPath}' is in an invalid root folder. Expected one of: {string.Join(", ", folderHierarchy.Keys)}", assetPath);
             return;
         }
 
@@ -97,43 +97,43 @@ public class FolderStructureValidator : AssetPostprocessor
                     {
                         case "Textures":
                             if (!new[] { ".png", ".jpg", ".jpeg", ".tga", ".psd" }.Contains(extension))
-                                Debug.LogWarning($"Asset '{assetPath}' in 'Arts/Textures' is not a common image format.");
+                                LogWarning($"Asset '{assetPath}' in 'Arts/Textures' is not a common image format.", assetPath);
                             break;
                         case "Models":
                             if (!new[] { ".fbx", ".obj" }.Contains(extension)) // obj نیز اضافه شد
-                                Debug.LogWarning($"Asset '{assetPath}' in 'Arts/Models' is not a common model format.");
+                                LogWarning($"Asset '{assetPath}' in 'Arts/Models' is not a common model format.", assetPath);
                             break;
                         case "Materials":
                             if (extension != ".mat")
-                                Debug.LogWarning($"Asset '{assetPath}' in 'Arts/Materials' is not a material.");
+                                LogWarning($"Asset '{assetPath}' in 'Arts/Materials' is not a material.", assetPath);
                             break;
                     }
                 }
                 else
                 {
-                    Debug.LogWarning($"Asset '{assetPath}' in '{rootFolder}' is not in a valid path. Consider moving it.");
+                    LogWarning($"Asset '{assetPath}' in '{rootFolder}' is not in a valid path. Consider moving it.", assetPath);
                 }
                 break;
             case "Scripts":
                 if (pathParts.Length > 1)
                 {
                     if (extension != ".cs")
-                        Debug.LogWarning($"Asset '{assetPath}' in 'Scripts' folder is not a C# script.");
+                        LogWarning($"Asset '{assetPath}' in 'Scripts' folder is not a C# script.", assetPath);
                 }
                 else
-                    Debug.LogWarning($"Asset '{assetPath}' in '{rootFolder}' is not in a valid path. Consider moving it.");
+                    LogWarning($"Asset '{assetPath}' in '{rootFolder}' is not in a valid path. Consider moving it.", assetPath);
                 break;
             case "Presets":
                 if (extension != ".preset")
-                    Debug.LogWarning($"Asset '{assetPath}' in 'Presets' folder is not a preset file.");
+                    LogWarning($"Asset '{assetPath}' in 'Presets' folder is not a preset file.", assetPath);
                 break;
             case "Prefabs":
                 if (extension != ".prefab")
-                    Debug.LogWarning($"Asset '{assetPath}' in 'Prefabs' folder is not a prefab.");
+                    LogWarning($"Asset '{assetPath}' in 'Prefabs' folder is not a prefab.", assetPath);
                 break;
             case "GameData":
                 if (!new[] { ".asset", ".inputactions", ".physicmaterial" }.Contains(extension))
-                    Debug.LogWarning($"Asset '{assetPath}' in 'GameData' is not a valid data asset.");
+                    LogWarning($"Asset '{assetPath}' in 'GameData' is not a valid data asset.", assetPath);
                 break;
         }
     }
@@ -149,7 +149,7 @@ public class FolderStructureValidator : AssetPostprocessor
         // قانون 1: بررسی PascalCase برای نام فایل
         if (!IsPascalCase(fileName))
         {
-            Debug.LogWarning($"Naming Convention Violation: Asset name '{fileName}' in '{assetPath}' is not in PascalCase.");
+            LogWarning($"Naming Convention Violation: Asset name '{fileName}' in '{assetPath}' is not in PascalCase.", assetPath);
         }
 
         // بررسی PascalCase برای نام پوشه‌ها
@@ -158,7 +158,7 @@ public class FolderStructureValidator : AssetPostprocessor
         {
             if (!IsPascalCase(pathParts[i]))
             {
-                Debug.LogWarning($"Naming Convention Violation: Folder name '{pathParts[i]}' in '{assetPath}' is not in PascalCase.");
+                LogWarning($"Naming Convention Violation: Folder name '{pathParts[i]}' in '{assetPath}' is not in PascalCase.", assetPath);
             }
         }
 
@@ -167,27 +167,27 @@ public class FolderStructureValidator : AssetPostprocessor
         {
             if (!fileName.StartsWith("SM_") && !fileName.StartsWith("DM_"))
             {
-                Debug.LogWarning($"Naming Convention Violation: Model '{fileName}' should start with a prefix like 'SM_' (Static Mesh) or 'DM_' (Dynamic Mesh).");
+                LogWarning($"Naming Convention Violation: Model '{fileName}' should start with a prefix like 'SM_' (Static Mesh) or 'DM_' (Dynamic Mesh).", assetPath);
             }
         }
 
         // قانون 3: بررسی پسوند برای تکسچرها
         if (parentFolder.EndsWith("Arts/Textures"))
         {
-            string[] requiredPrefixes = { "TC_", "RT_"}; 
-            
+            string[] requiredPrefixes = { "TC_", "RT_" };
+
             if (fileName.StartsWith("T_"))
             {
                 string[] requiredSuffixes = { "_BC", "_N", "_MS", "_H", "_AO", "_E", "_I" }; // BaseColor, Normal, Metallic, Height, AmbientOcclusion, Emission
                 if (!requiredSuffixes.Any(suffix => fileName.EndsWith(suffix)))
                 {
-                    Debug.LogWarning($"Naming Convention Violation: Texture '{fileName}' should end with a suffix like {string.Join(", ", requiredSuffixes)}.");
+                    LogWarning($"Naming Convention Violation: Texture '{fileName}' should end with a suffix like {string.Join(", ", requiredSuffixes)}.", assetPath);
                 }
             }
 
             else if (!requiredPrefixes.Any(suffix => fileName.StartsWith(suffix)))
             {
-                Debug.LogWarning($"Naming Convention Violation: Texture '{fileName}' should start with a suffix like {string.Join(", ", requiredPrefixes)}.");
+                LogWarning($"Naming Convention Violation: Texture '{fileName}' should start with a suffix like {string.Join(", ", requiredPrefixes)}.", assetPath);
             }
         }
 
@@ -197,7 +197,7 @@ public class FolderStructureValidator : AssetPostprocessor
         {
             if (!fileName.StartsWith("M_"))
             {
-                Debug.LogWarning($"Naming Convention Violation: Material '{fileName}' should start with the prefix 'M_'.");
+                LogWarning($"Naming Convention Violation: Material '{fileName}' should start with the prefix 'M_'.", assetPath);
             }
         }
     }
@@ -214,6 +214,11 @@ public class FolderStructureValidator : AssetPostprocessor
         // استفاده از Regex برای بررسی دقیق‌تر
         return Regex.IsMatch(str, @"^[A-Z][a-zA-Z0-9 ]*$");
     }
-  
+    private static void LogWarning(string message,string assetPath)
+    {
+        Debug.LogWarning(message, AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(assetPath));
+    }
+   
+
 }
 #endif
