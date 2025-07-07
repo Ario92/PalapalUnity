@@ -12,11 +12,8 @@ namespace Palapal.Shared
     public class FolderHierarchyCreator : EditorWindow
     {
         // Define a nested dictionary for multi-level folder structure
-        private static readonly Dictionary<string, object> folderHierarchy = new Dictionary<string, object>
-        {
-            { 
-                "_Assets", new Dictionary<string, object> {
-                    { "Arts", new Dictionary<string, object> {
+        private static readonly Dictionary<string, object> folderHierarchy = new Dictionary<string, object> {
+            { "Arts", new Dictionary<string, object> {
                     { "Fonts", null },
                     { "Models", null },
                     { "Materials", null },
@@ -30,25 +27,25 @@ namespace Palapal.Shared
                         { "Clips", null },
                         { "Animators", null }
                     }},
-                }},
-                { "Scripts", new Dictionary<string, object> {
-                    { "Editor", null },
-                    { "RunTime", null },
-                    { "ScriptableObjects", null },
-                    { "Shaders", null },
-                    { "Helpers", null }
-                }},
-                { "Scenes", new Dictionary<string, object> {
-                    { "Templates", null },
-                    { "Levels", null }
-                }},
-                { "Prefabs", null },
-                { "Presets", null },
-                { "GameData", new Dictionary<string, object> {
-                    { "InputActions", null },
-                }}
                 }
-            }
+            },
+            { "Scripts", new Dictionary<string, object> {
+                { "Editor", null },
+                { "RunTime", null },
+                { "ScriptableObjects", null },
+                { "Shaders", null },
+                { "Helpers", null }
+            }},
+            { "Scenes", new Dictionary<string, object> {
+                { "Templates", null },
+                { "Levels", null }
+            }},
+            { "Prefabs", null },
+            { "Presets", null },
+            { "GameData", new Dictionary<string, object> {
+                { "InputActions", null },
+            }}
+
         };
 
         [MenuItem("Palapal/Create Folder Hierarchy")]
@@ -68,6 +65,13 @@ namespace Palapal.Shared
                 if (!string.IsNullOrEmpty(selectedPath))
                 {
                     CreateFolderHierarchy(selectedPath, folderHierarchy);
+                    string relativePath = selectedPath;
+                    if (relativePath.StartsWith(Application.dataPath))
+                    {
+                        relativePath = "Assets" + relativePath.Substring(Application.dataPath.Length);
+                    }
+                    FolderValidatorSettingsManager.AddFolderToList(relativePath);
+                    
                     AssetDatabase.Refresh();
                     Debug.Log("Folder hierarchy created successfully.");
                 }
@@ -89,7 +93,6 @@ namespace Palapal.Shared
                     Directory.CreateDirectory(folderPath);
                 }
 
-                // If this folder has nested subfolders, recursively create them
                 if (entry.Value is Dictionary<string, object> subfolders)
                 {
                     CreateFolderHierarchy(folderPath, subfolders);

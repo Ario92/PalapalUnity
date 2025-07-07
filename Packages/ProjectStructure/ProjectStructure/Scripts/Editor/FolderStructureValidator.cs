@@ -1,17 +1,13 @@
-﻿// Assets/Editor/FolderStructureValidator.cs
-#if UNITY_EDITOR
+﻿#if UNITY_EDITOR
 
 using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions; // برای استفاده از متدهای LINQ مانند Any()
-
+using System.Text.RegularExpressions; 
 public class FolderStructureValidator : AssetPostprocessor
 {
-    // تعریف سلسله مراتب فولدرهای مورد انتظار شما
-    // کلید: نام فولدر، مقدار: دیکشنری برای زیرفولدرها یا null اگر برگ (leaf) باشد
     private static readonly Dictionary<string, object> folderHierarchy = new Dictionary<string, object>
     {
        { "Arts", new Dictionary<string, object> {
@@ -47,42 +43,43 @@ public class FolderStructureValidator : AssetPostprocessor
         }}
     };
 
-    // متد فراخوانی شده پس از وارد شدن یک Asset
     private static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
     {
+       var targetFolderPaths = FolderValidatorSettingsManager.GetFolders();
+        
+        if (targetFolderPaths.Count == 0) return;
+
         foreach (string assetPath in importedAssets.Concat(movedAssets))
         {
-            if (AssetDatabase.IsValidFolder(assetPath) || assetPath.EndsWith(".meta") || !assetPath.StartsWith("Assets/_Assets/"))
+            if (AssetDatabase.IsValidFolder(assetPath) || assetPath.EndsWith(".meta"))
             {
                 continue;
             }
-
-            ValidateAssetLocationAndNaming(assetPath);
+            string containingFolder = targetFolderPaths.FirstOrDefault(folderPath => assetPath.StartsWith(folderPath + "/"));
+            if (containingFolder == null)
+            {
+                continue;
+            }
+            ValidateAssetLocationAndNaming(assetPath, containingFolder);
         }
     }
-    private static void ValidateAssetLocationAndNaming(string assetPath)
+    private static void ValidateAssetLocationAndNaming(string assetPath, string rootFolderPath)
     {
-        string relativePath = assetPath.Substring("Assets/_Assets/".Length);
+        string relativePath = assetPath.Substring(rootFolderPath.Length + 1);
         string[] pathParts = relativePath.Split('/');
         string rootFolder = pathParts.Length > 0 ? pathParts[0] : string.Empty;
 
-        // 1. بررسی وجود در فولدر ریشه معتبر
         if (string.IsNullOrEmpty(rootFolder) || !folderHierarchy.ContainsKey(rootFolder))
         {
-            LogWarning($"Asset '{assetPath}' is in an invalid root folder. Expected one of: {string.Join(", ", folderHierarchy.Keys)}", assetPath);
+            LogWarning($"Asset '{assetPath}' is in an invalid root folder inside '{rootFolderPath}'. Expected one of: {string.Join(", ", folderHierarchy.Keys)}", assetPath);
             return;
         }
 
-        // 2. بررسی نوع فایل در فولدرهای مشخص
         ValidateAssetTypeByLocation(assetPath, rootFolder, pathParts);
 
-        // 3. بررسی قوانین نام‌گذاری
         ValidateNamingConventions(assetPath, pathParts);
     }
 
-    /// <summary>
-    /// بررسی می‌کند که آیا نوع Asset با پوشه‌ای که در آن قرار دارد مطابقت دارد یا خیر.
-    /// </summary>
     private static void ValidateAssetTypeByLocation(string assetPath, string rootFolder, string[] pathParts)
     {
         string extension = Path.GetExtension(assetPath).ToLower();
@@ -138,22 +135,17 @@ public class FolderStructureValidator : AssetPostprocessor
         }
     }
 
-    /// <summary>
-    /// بررسی قوانین نام‌گذاری شامل PascalCase، پیشوندها و پسوندها.
-    /// </summary>
+
     private static void ValidateNamingConventions(string assetPath, string[] pathParts)
     {
         string fileName = Path.GetFileNameWithoutExtension(assetPath);
         string parentFolder = Path.GetDirectoryName(assetPath).Replace('\\', '/');
 
-        // قانون 1: بررسی PascalCase برای نام فایل
         if (!IsPascalCase(fileName))
         {
             LogWarning($"Naming Convention Violation: Asset name '{fileName}' in '{assetPath}' is not in PascalCase.", assetPath);
         }
 
-        // بررسی PascalCase برای نام پوشه‌ها
-        // منهای یک چون آخرین بخش نام فایل است
         for (int i = 0; i < pathParts.Length - 1; i++)
         {
             if (!IsPascalCase(pathParts[i]))
@@ -162,7 +154,6 @@ public class FolderStructureValidator : AssetPostprocessor
             }
         }
 
-        // قانون 2: بررسی پیشوند برای مدل‌ها
         if (parentFolder.EndsWith("Arts/Models"))
         {
             if (!fileName.StartsWith("SM_") && !fileName.StartsWith("DM_"))
@@ -171,7 +162,6 @@ public class FolderStructureValidator : AssetPostprocessor
             }
         }
 
-        // قانون 3: بررسی پسوند برای تکسچرها
         if (parentFolder.EndsWith("Arts/Textures"))
         {
             string[] requiredPrefixes = { "TC_", "RT_" };
@@ -191,8 +181,6 @@ public class FolderStructureValidator : AssetPostprocessor
             }
         }
 
-        // می‌توانید قوانین بیشتری برای سایر Asset ها اضافه کنید
-        // مثال برای متریال‌ها
         if (parentFolder.EndsWith("Arts/Materials"))
         {
             if (!fileName.StartsWith("M_"))
@@ -202,23 +190,17 @@ public class FolderStructureValidator : AssetPostprocessor
         }
     }
 
-    /// <summary>
-    /// بررسی می‌کند که آیا رشته ورودی به فرمت PascalCase است یا خیر.
-    /// </summary>
     private static bool IsPascalCase(string str)
     {
         if (string.IsNullOrEmpty(str))
-            return true; // رشته خالی معتبر در نظر گرفته می‌شود
-
-        // یک رشته PascalCase باید با حرف بزرگ شروع شود و شامل حروف و اعداد باشد.
-        // استفاده از Regex برای بررسی دقیق‌تر
+            return true;
         return Regex.IsMatch(str, @"^[A-Z][a-zA-Z0-9 ]*$");
     }
-    private static void LogWarning(string message,string assetPath)
+    private static void LogWarning(string message, string assetPath)
     {
         Debug.LogWarning(message, AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(assetPath));
     }
-   
+
 
 }
 #endif
