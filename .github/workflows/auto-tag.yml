@@ -5,7 +5,7 @@ name: Auto Tag from Commit
 on:
   push:
     branches:
-      - main # یا نام شاخه اصلی شما مانند master
+      - Dev # یا نام شاخه اصلی شما مانند master
 
 jobs:
   tag:
