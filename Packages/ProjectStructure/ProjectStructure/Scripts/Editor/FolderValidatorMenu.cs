@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 public class FolderValidatorMenu : EditorWindow
 {
-    private List<string> _targetFolders;
+    private static List<string> _targetFolders;
     private Vector2 _scrollPosition;
 
     [MenuItem("Palapal/Folder Validator Settings")]
@@ -18,6 +18,7 @@ public class FolderValidatorMenu : EditorWindow
     {
         _targetFolders = FolderValidatorSettingsManager.GetFolders();
     }
+
 
     private void OnGUI()
     {
@@ -34,17 +35,18 @@ public class FolderValidatorMenu : EditorWindow
                 {
                     path = "Assets" + path.Substring(Application.dataPath.Length);
                 }
-                
+
                 FolderValidatorSettingsManager.AddFolderToList(path);
-                _targetFolders = FolderValidatorSettingsManager.GetFolders(); 
+                _targetFolders = FolderValidatorSettingsManager.GetFolders();
             }
         }
 
         EditorGUILayout.Space();
 
         _scrollPosition = EditorGUILayout.BeginScrollView(_scrollPosition);
-        
+
         List<string> foldersToRemove = new List<string>();
+        List<string> foldersToValidate = new List<string>();
 
         foreach (string folder in _targetFolders)
         {
@@ -54,6 +56,10 @@ public class FolderValidatorMenu : EditorWindow
             {
                 foldersToRemove.Add(folder);
             }
+            if (GUILayout.Button("Validate", GUILayout.Width(60)))
+            {
+                foldersToValidate.Add(folder);
+            }
             EditorGUILayout.EndHorizontal();
         }
 
@@ -61,12 +67,24 @@ public class FolderValidatorMenu : EditorWindow
 
         if (foldersToRemove.Count > 0)
         {
-            foreach(var folder in foldersToRemove)
+            foreach (var folder in foldersToRemove)
             {
                 FolderValidatorSettingsManager.RemoveFolder(folder);
             }
-            _targetFolders = FolderValidatorSettingsManager.GetFolders(); 
+            _targetFolders = FolderValidatorSettingsManager.GetFolders();
         }
+
+        if (foldersToValidate.Count > 0)
+        {
+            foreach (var folder in foldersToValidate)
+            {
+                FolderStructureValidator.ValidateAssetsInPath(folder);
+            }
+        }
+    }
+    public static void RefreshList()
+    {
+        _targetFolders = FolderValidatorSettingsManager.GetFolders();
     }
 }
 #endif

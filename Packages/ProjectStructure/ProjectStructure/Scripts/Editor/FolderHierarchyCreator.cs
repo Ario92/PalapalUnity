@@ -73,7 +73,7 @@ namespace Palapal.Shared
                     FolderValidatorSettingsManager.AddFolderToList(relativePath);
                     
                     AssetDatabase.Refresh();
-                    Debug.Log("Folder hierarchy created successfully.");
+                    Debug.Log("Folder hierarchy created successfully.", AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(relativePath));
                 }
                 else
                 {
