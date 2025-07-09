@@ -45,3 +45,17 @@ jobs:
           else
             echo "No valid release tag found in commit message."
           fi
+      
+      # مرحله 3: با استفاده از یک اکشن آماده، رلیز را ایجاد می‌کند
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          # نام رلیز به صورت خودکار از نام تگ خوانده می‌شود (مثلا: Release v0.0.5)
+          name: Release ${{ github.ref_name }}
+          
+          # توضیحات رلیز را می‌توانید در اینجا بنویسید
+          # یا از محتوای یک فایل مانند CHANGELOG.md بخوانید
+          # body_path: CHANGELOG.md 
+          body: |
+            New release based on tag $TAG.
+            Check the CHANGELOG.md for more details.
