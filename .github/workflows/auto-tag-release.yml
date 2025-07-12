@@ -1,0 +1,66 @@
+# نام ورک‌فلو
+name: Auto Tag and Release from Commit
+
+# این اکشن با هر پوش روی شاخه main فعال می‌شود
+on:
+  push:
+    branches:
+      - Dev # یا نام شاخه اصلی شما مانند master
+
+jobs:
+  tag_and_release:
+    runs-on: ubuntu-latest
+    # این جاب فقط زمانی اجرا می‌شود که در متن کامیت عبارت "release:" وجود داشته باشد
+    if: "contains(github.event.head_commit.message, 'release:')"
+    permissions:
+      contents: write # برای ساختن و پوش کردن تگ و ساختن رلیز، دسترسی write لازم است
+
+    steps:
+      # مرحله ۱: کدها را دانلود می‌کند
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # مرحله ۲: نسخه را از متن کامیت استخراج کرده، تگ را می‌سازد و نسخه را به عنوان خروجی ثبت می‌کند
+      - name: Extract Tag Version and Create Tag
+        id: extract_tag # به این مرحله یک شناسه (id) می‌دهیم
+        run: |
+          COMMIT_MSG="${{ github.event.head_commit.message }}"
+          
+          if [[ "$COMMIT_MSG" =~ release:[[:space:]]*(v[0-9]+\.[0-9]+\.[0-9]+) ]]; then
+            TAG="${BASH_REMATCH[1]}"
+            echo "Found tag $TAG in commit message."
+            
+            # ثبت تگ به عنوان خروجی برای استفاده در مراحل بعدی
+            echo "tag_version=$TAG" >> $GITHUB_OUTPUT
+            
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            
+            git tag $TAG
+            git push origin $TAG
+            
+            echo "Successfully created and pushed tag $TAG."
+          else
+            echo "No valid release tag found in commit message."
+            echo "tag_version=" >> $GITHUB_OUTPUT # خروجی را خالی می‌گذاریم
+          fi
+      
+      # مرحله ۳: با استفاده از یک اکشن آماده، رلیز را ایجاد می‌کند
+      - name: Create GitHub Release
+        # این مرحله فقط در صورتی اجرا می‌شود که مرحله قبل یک تگ معتبر پیدا کرده باشد
+        if: steps.extract_tag.outputs.tag_version != ''
+        uses: softprops/action-gh-release@v2
+        with:
+          # ✅ مشکل حل شد: از خروجی مرحله قبل برای نام تگ استفاده می‌کنیم
+          tag_name: ${{ steps.extract_tag.outputs.tag_version }}
+          
+          # ✅ مشکل حل شد: از خروجی مرحله قبل برای نام رلیز استفاده می‌کنیم
+          name: Release ${{ steps.extract_tag.outputs.tag_version }}
+          
+          # ✅ مشکل حل شد: از خروجی مرحله قبل در توضیحات استفاده می‌کنیم
+          body: |
+            New release based on tag ${{ steps.extract_tag.outputs.tag_version }}.
+            Check the CHANGELOG.md for more details.
+            
+          # برای خواندن توضیحات از فایل، این خط را از کامنت خارج کنید
+          # body_path: CHANGELOG.md
