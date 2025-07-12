@@ -1,6 +1,8 @@
+Version 0.0.7
+    Bugfix: Fixed a bug on validating prefixes and suffixes.
 Version 0.0.6
     Bugfix: Fixed a bug in warning message color.
-    bugfix: Fixed a bug in the validation system when use number after '_' in naming.
+    Bugfix: Fixed a bug in the validation system when use number after '_' in naming.
 Version 0.0.5
     - Added: A new setting to validation folders.
     - Added: Validate SFXs.

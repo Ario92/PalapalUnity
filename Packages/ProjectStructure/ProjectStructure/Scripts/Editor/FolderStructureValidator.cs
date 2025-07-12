@@ -6,44 +6,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Palapal.Shared;
 public class FolderStructureValidator : AssetPostprocessor
 {
     private const string _projectStructureViolationWarningPart = "<b><color=orange>Project Structure Convention Violation:</color><color=aqua> Asset</color></b> ";
     private const string _namingViolationWarningPart = "<b><color=yellow>Naming Convention Violation:</color></b> ";
-    private static readonly Dictionary<string, object> folderHierarchy = new Dictionary<string, object>
-    {
-       { "Arts", new Dictionary<string, object> {
-            { "Fonts", null },
-            { "Models", null },
-            { "Materials", null },
-            { "Textures", null },
-            { "VFXs", new Dictionary<string, object> {
-                { "Clips", null },
-                { "Graphs", null }
-            }} ,
-            { "SFXs", null },
-            { "Animations", new Dictionary<string, object> {
-                { "Clips", null },
-                { "Animators", null }
-            }},
-        }},
-        { "Scripts", new Dictionary<string, object> {
-            { "Editor", null },
-            { "RunTime", null },
-            { "ScriptableObjects", null },
-            { "Shaders", null },
-            { "Helpers", null }
-        }},
-        { "Scenes", new Dictionary<string, object> {
-            { "Templates", null },
-            { "Levels", null }
-        }},
-        { "Prefabs", null },
-        { "Presets", null },
-        { "GameData", new Dictionary<string, object> {
-            { "InputActions", null },
-        }}
-    };
+
     private static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
     {
         ValidateAssets(importedAssets.Concat(movedAssets).ToArray());
@@ -100,15 +68,15 @@ public class FolderStructureValidator : AssetPostprocessor
         string[] pathParts = relativePath.Split('/');
         string rootFolder = pathParts.Length > 0 ? pathParts[0] : string.Empty;
 
-        if (string.IsNullOrEmpty(rootFolder) || !folderHierarchy.ContainsKey(rootFolder))
+        if (string.IsNullOrEmpty(rootFolder) || !FolderHierarchyCreator.folderHierarchy.ContainsKey(rootFolder))
         {
-            LogWarning($"{_projectStructureViolationWarningPart}'{assetPath}' is in an invalid root folder inside '{rootFolderPath}'. Expected one of: {string.Join(", ", folderHierarchy.Keys)}", assetPath);
+            LogWarning($"{_projectStructureViolationWarningPart}'{assetPath}' is in an invalid root folder inside '{rootFolderPath}'. Expected one of: {string.Join(", ", FolderHierarchyCreator.folderHierarchy.Keys)}", assetPath);
             return;
         }
 
         ValidateAssetTypeByLocation(assetPath, rootFolder, pathParts);
 
-        ValidateNamingConventions(assetPath, pathParts);
+        ValidateNamingConventions(assetPath, rootFolderPath+"/", pathParts);
     }
 
     private static void ValidateAssetTypeByLocation(string assetPath, string rootFolder, string[] pathParts)
@@ -124,7 +92,7 @@ public class FolderStructureValidator : AssetPostprocessor
                     switch (subFolder)
                     {
                         case "Textures":
-                            if (!new[] { ".png", ".jpg", ".jpeg", ".tga", ".psd" }.Contains(extension))
+                            if (!new[] { ".png", ".jpg", ".jpeg", ".tif", ".tga", ".psd" }.Contains(extension))
                                 LogWarning($"{_projectStructureViolationWarningPart}'{assetPath}' in 'Arts/Textures' is not a common image format.", assetPath);
                             break;
                         case "Models":
@@ -171,7 +139,7 @@ public class FolderStructureValidator : AssetPostprocessor
     }
 
 
-    private static void ValidateNamingConventions(string assetPath, string[] pathParts)
+    private static void ValidateNamingConventions(string assetPath, string rootFolder, string[] pathParts)
     {
         string fileName = Path.GetFileNameWithoutExtension(assetPath);
         string parentFolder = Path.GetDirectoryName(assetPath).Replace('\\', '/');
@@ -190,14 +158,14 @@ public class FolderStructureValidator : AssetPostprocessor
             }
         }
 
-        if (parentFolder.EndsWith("Arts/Models"))
+        if (parentFolder.StartsWith($"{rootFolder}Arts/Models"))
         {
             if (!fileName.StartsWith("SM_") && !fileName.StartsWith("DM_"))
             {
                 LogWarning($"{_namingViolationWarningPart}Model <b>'{fileName}'</b> should start with a prefix like <b><color=yellow>'SM_' (Static Mesh) or 'DM_' (Dynamic Mesh)</color></b>.", assetPath);
             }
         }
-        if (parentFolder.EndsWith("Arts/SFXs"))
+        if (parentFolder.StartsWith($"{rootFolder}Arts/SFXs"))
         {
             if (extension != ".mixer")
             {
@@ -208,7 +176,7 @@ public class FolderStructureValidator : AssetPostprocessor
                 }
             }
         }
-        if (parentFolder.EndsWith("Arts/Textures"))
+        if (parentFolder.StartsWith($"{rootFolder}Arts/Textures"))
         {
             string[] requiredPrefixes = { "TC_", "RT_" };
 
@@ -224,14 +192,6 @@ public class FolderStructureValidator : AssetPostprocessor
             else if (!requiredPrefixes.Any(suffix => fileName.StartsWith(suffix)))
             {
                 LogWarning($"{_namingViolationWarningPart}Texture <b>'{fileName}'</b> should start with a <b><color=yellow>suffix like {string.Join(", ", requiredPrefixes)}</color></b>.", assetPath);
-            }
-        }
-
-        if (parentFolder.EndsWith("Arts/Materials"))
-        {
-            if (!fileName.StartsWith("M_"))
-            {
-                LogWarning($"{_namingViolationWarningPart}Material <b>'{fileName}'</b> should start with the <b><color=yellow>prefix 'M_'</color></b>.", assetPath);
             }
         }
     }

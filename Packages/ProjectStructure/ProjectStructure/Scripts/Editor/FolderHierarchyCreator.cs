@@ -12,7 +12,7 @@ namespace Palapal.Shared
     public class FolderHierarchyCreator : EditorWindow
     {
         // Define a nested dictionary for multi-level folder structure
-        private static readonly Dictionary<string, object> folderHierarchy = new Dictionary<string, object> {
+        public static readonly Dictionary<string, object> folderHierarchy = new Dictionary<string, object> {
             { "Arts", new Dictionary<string, object> {
                     { "Fonts", null },
                     { "Models", null },
