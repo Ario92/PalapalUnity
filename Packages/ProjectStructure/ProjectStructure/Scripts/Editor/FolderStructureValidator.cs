@@ -8,6 +8,8 @@ using System.Linq;
 using System.Text.RegularExpressions;
 public class FolderStructureValidator : AssetPostprocessor
 {
+    private const string _projectStructureViolationWarningPart = "<b><color=orange>Project Structure Convention Violation:</color><color=aqua> Asset</color></b> ";
+    private const string _namingViolationWarningPart = "<b><color=yellow>Naming Convention Violation:</color></b> ";
     private static readonly Dictionary<string, object> folderHierarchy = new Dictionary<string, object>
     {
        { "Arts", new Dictionary<string, object> {
@@ -71,7 +73,7 @@ public class FolderStructureValidator : AssetPostprocessor
 
         if (targetFolderPaths.Count == 0) return;
 
-        foreach (string assetPath in assets)//importedAssets.Concat(movedAssets))
+        foreach (string assetPath in assets)
         {
             ValidateAsset(targetFolderPaths, assetPath);
         }
@@ -100,7 +102,7 @@ public class FolderStructureValidator : AssetPostprocessor
 
         if (string.IsNullOrEmpty(rootFolder) || !folderHierarchy.ContainsKey(rootFolder))
         {
-            LogWarning($"<b><color=>Project Structure Convention Violation:</color></b> Asset '{assetPath}' is in an invalid root folder inside '{rootFolderPath}'. Expected one of: {string.Join(", ", folderHierarchy.Keys)}", assetPath);
+            LogWarning($"{_projectStructureViolationWarningPart}'{assetPath}' is in an invalid root folder inside '{rootFolderPath}'. Expected one of: {string.Join(", ", folderHierarchy.Keys)}", assetPath);
             return;
         }
 
@@ -123,47 +125,47 @@ public class FolderStructureValidator : AssetPostprocessor
                     {
                         case "Textures":
                             if (!new[] { ".png", ".jpg", ".jpeg", ".tga", ".psd" }.Contains(extension))
-                                LogWarning($"<b><color=>Project Structure Convention Violation:</color></b> Asset '{assetPath}' in 'Arts/Textures' is not a common image format.", assetPath);
+                                LogWarning($"{_projectStructureViolationWarningPart}'{assetPath}' in 'Arts/Textures' is not a common image format.", assetPath);
                             break;
                         case "Models":
                             if (!new[] { ".fbx", ".obj" }.Contains(extension))
-                                LogWarning($"<b><color=>Project Structure Convention Violation:</color></b> Asset '{assetPath}' in 'Arts/Models' is not a common model format.", assetPath);
+                                LogWarning($"{_projectStructureViolationWarningPart}'{assetPath}' in 'Arts/Models' is not a common model format.", assetPath);
                             break;
                         case "SFXs":
                             if (!new[] { ".wav", ".mp3", ".ogg", ".mixer" }.Contains(extension))
-                                LogWarning($"<b><color=>Project Structure Convention Violation:</color></b> Asset '{assetPath}' in 'Arts/SFXs' is not a common audio format.", assetPath);
+                                LogWarning($"{_projectStructureViolationWarningPart}'{assetPath}' in 'Arts/SFXs' is not a common audio format.", assetPath);
                             break;
                         case "Materials":
                             if (extension != ".mat")
-                                LogWarning($"<b><color=>Project Structure Convention Violation:</color></b> Asset '{assetPath}' in 'Arts/Materials' is not a material.", assetPath);
+                                LogWarning($"{_projectStructureViolationWarningPart}'{assetPath}' in 'Arts/Materials' is not a material.", assetPath);
                             break;
                     }
                 }
                 else
                 {
-                    LogWarning($"<b><color=>Project Structure Convention Violation:</color></b> Asset '{assetPath}' in '{rootFolder}' is not in a valid path. Consider moving it.", assetPath);
+                    LogWarning($"{_projectStructureViolationWarningPart}'{assetPath}' in '{rootFolder}' is not in a valid path. Consider moving it.", assetPath);
                 }
                 break;
             case "Scripts":
                 if (pathParts.Length > 1)
                 {
                     if (extension != ".cs")
-                        LogWarning($"<b><color=>Project Structure Convention Violation:</color></b> Asset '{assetPath}' in 'Scripts' folder is not a C# script.", assetPath);
+                        LogWarning($"{_projectStructureViolationWarningPart}'{assetPath}' in 'Scripts' folder is not a C# script.", assetPath);
                 }
                 else
-                    LogWarning($"<b><color=>Project Structure Convention Violation:</color></b> Asset '{assetPath}' in '{rootFolder}' is not in a valid path. Consider moving it.", assetPath);
+                    LogWarning($"{_projectStructureViolationWarningPart}'{assetPath}' in '{rootFolder}' is not in a valid path. Consider moving it.", assetPath);
                 break;
             case "Presets":
                 if (extension != ".preset")
-                    LogWarning($"<b><color=>Project Structure Convention Violation:</color></b> Asset '{assetPath}' in 'Presets' folder is not a preset file.", assetPath);
+                    LogWarning($"{_projectStructureViolationWarningPart}'{assetPath}' in 'Presets' folder is not a preset file.", assetPath);
                 break;
             case "Prefabs":
                 if (extension != ".prefab")
-                    LogWarning($"<b><color=>Project Structure Convention Violation:</color></b> Asset '{assetPath}' in 'Prefabs' folder is not a prefab.", assetPath);
+                    LogWarning($"{_projectStructureViolationWarningPart}'{assetPath}' in 'Prefabs' folder is not a prefab.", assetPath);
                 break;
             case "GameData":
                 if (!new[] { ".asset", ".inputactions", ".physicmaterial" }.Contains(extension))
-                    LogWarning($"<b><color=>Project Structure Convention Violation:</color></b> Asset '{assetPath}' in 'GameData' is not a valid data asset.", assetPath);
+                    LogWarning($"{_projectStructureViolationWarningPart}'{assetPath}' in 'GameData' is not a valid data asset.", assetPath);
                 break;
         }
     }
@@ -177,14 +179,14 @@ public class FolderStructureValidator : AssetPostprocessor
 
         if (!IsPascalCase(fileName))
         {
-            LogWarning($"<b><color=yellow>Naming Convention Violation:</color></b> Asset name <b>'{fileName}'</b> in '{assetPath}' is not in PascalCase.", assetPath);
+            LogWarning($"{_namingViolationWarningPart}<b><color=cyan>Asset name</color> '{fileName}'</b> in '{assetPath}' is not in PascalCase.", assetPath);
         }
 
         for (int i = 0; i < pathParts.Length - 1; i++)
         {
             if (!IsPascalCase(pathParts[i]))
             {
-                LogWarning($"<b><color=yellow>Naming Convention Violation:</color></b> Folder name <b>'{pathParts[i]}'</b> in '{assetPath}' is not in PascalCase.", assetPath);
+                LogWarning($"{_namingViolationWarningPart}<b><color=red>Folder name</color> '{pathParts[i]}'</b> in '{assetPath}' is not in PascalCase.", assetPath);
             }
         }
 
@@ -192,7 +194,7 @@ public class FolderStructureValidator : AssetPostprocessor
         {
             if (!fileName.StartsWith("SM_") && !fileName.StartsWith("DM_"))
             {
-                LogWarning($"<b><color=yellow>Naming Convention Violation:</color></b> Model <b>'{fileName}'</b> should start with a prefix like <b><color=yellow>'SM_' (Static Mesh) or 'DM_' (Dynamic Mesh)</color></b>.", assetPath);
+                LogWarning($"{_namingViolationWarningPart}Model <b>'{fileName}'</b> should start with a prefix like <b><color=yellow>'SM_' (Static Mesh) or 'DM_' (Dynamic Mesh)</color></b>.", assetPath);
             }
         }
         if (parentFolder.EndsWith("Arts/SFXs"))
@@ -202,7 +204,7 @@ public class FolderStructureValidator : AssetPostprocessor
                 string[] requiredSuffixes = { "_S", "_D" };
                 if (!requiredSuffixes.Any(suffix => fileName.EndsWith(suffix)))
                 {
-                    LogWarning($"<b><color=yellow>Naming Convention Violation:</color></b> SFX <b>'{fileName}'</b> should end with a <b><color=yellow>suffix like {string.Join(", ", requiredSuffixes)}</color></b>.", assetPath);
+                    LogWarning($"{_namingViolationWarningPart}SFX <b>'{fileName}'</b> should end with a <b><color=yellow>suffix like {string.Join(", ", requiredSuffixes)}</color></b>.", assetPath);
                 }
             }
         }
@@ -215,13 +217,13 @@ public class FolderStructureValidator : AssetPostprocessor
                 string[] requiredSuffixes = { "_BC", "_N", "_MS", "_H", "_AO", "_E", "_I" }; // BaseColor, Normal, Metallic, Height, AmbientOcclusion, Emission
                 if (!requiredSuffixes.Any(suffix => fileName.EndsWith(suffix)))
                 {
-                    LogWarning($"<b><color=yellow>Naming Convention Violation:</color></b> Texture <b>'{fileName}'</b> should end with a <b><color=yellow>suffix like {string.Join(", ", requiredSuffixes)}</color></b>.", assetPath);
+                    LogWarning($"{_namingViolationWarningPart}Texture <b>'{fileName}'</b> should end with a <b><color=yellow>suffix like {string.Join(", ", requiredSuffixes)}</color></b>.", assetPath);
                 }
             }
 
             else if (!requiredPrefixes.Any(suffix => fileName.StartsWith(suffix)))
             {
-                LogWarning($"<b><color=yellow>Naming Convention Violation:</color></b> Texture <b>'{fileName}'</b> should start with a <b><color=yellow>suffix like {string.Join(", ", requiredPrefixes)}</color></b>.", assetPath);
+                LogWarning($"{_namingViolationWarningPart}Texture <b>'{fileName}'</b> should start with a <b><color=yellow>suffix like {string.Join(", ", requiredPrefixes)}</color></b>.", assetPath);
             }
         }
 
@@ -229,7 +231,7 @@ public class FolderStructureValidator : AssetPostprocessor
         {
             if (!fileName.StartsWith("M_"))
             {
-                LogWarning($"<b><color=yellow>Naming Convention Violation:</color></b> Material <b>'{fileName}'</b> should start with the <b><color=yellow>prefix 'M_'</color></b>.", assetPath);
+                LogWarning($"{_namingViolationWarningPart}Material <b>'{fileName}'</b> should start with the <b><color=yellow>prefix 'M_'</color></b>.", assetPath);
             }
         }
     }
@@ -239,9 +241,11 @@ public class FolderStructureValidator : AssetPostprocessor
         if (string.IsNullOrEmpty(str))
             return true;
 
-        foreach (var item in str.Split('_'))
+        var strParts = str.Split('_');
+        for (int i = 0; i < strParts.Length; i++)
         {
-            if (!Regex.IsMatch(item, @"^[A-Z][a-zA-Z0-9]*$"))
+            if ((i == 0 && !Regex.IsMatch(strParts[i], @"^[A-Z][a-zA-Z0-9]*$")) ||
+                i > 0 && !Regex.IsMatch(strParts[i], @"^[A-Z0-9][a-zA-Z0-9]*$"))
             {
                 return false;
             }

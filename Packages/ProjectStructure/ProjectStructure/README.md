@@ -1,3 +1,6 @@
+Version 0.0.6
+    Bugfix: Fixed a bug in warning message color.
+    bugfix: Fixed a bug in the validation system when use number after '_' in naming.
 Version 0.0.5
     - Added: A new setting to validation folders.
     - Added: Validate SFXs.
