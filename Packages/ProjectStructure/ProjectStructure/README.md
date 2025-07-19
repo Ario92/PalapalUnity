@@ -1,3 +1,5 @@
+Version 0.0.8
+    Feature: Exclude light data folder of scene from validation.
 Version 0.0.7
     Bugfix: Fixed a bug on validating prefixes and suffixes.
 Version 0.0.6
