@@ -1,3 +1,5 @@
+Version 0.0.9
+    - Added: Enhance texture format validation in FolderStructureValidator
 Version 0.0.8
     Feature: Exclude light data folder of scene from validation.
 Version 0.0.7
