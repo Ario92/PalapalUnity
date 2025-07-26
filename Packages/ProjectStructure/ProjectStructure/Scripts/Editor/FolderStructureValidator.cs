@@ -135,7 +135,7 @@ public class FolderStructureValidator : AssetPostprocessor
                     {
                         case "Textures":
                             // If the asset is not a common image format, log a warning
-                            if (!new[] { ".png", ".jpg", ".jpeg", ".tif", ".tga", ".psd" }.Contains(extension))
+                            if (!new[] { ".png", ".jpg", ".jpeg", ".tif", ".tga", ".psd", ".exr", ".hdr", ".rendertexture" }.Contains(extension))
                                 LogWarning($"{_projectStructureViolationWarningPart}'{assetPath}' in 'Arts/Textures' is not a common image format.", assetPath);
                             break;
                         case "Models":
