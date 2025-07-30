@@ -7,6 +7,7 @@ using UnityEngine;
 using System.IO;
 using System.Text;
 using System.Diagnostics;
+using UnityEditor.Build.Profile;
 
 public class BuildInfoPostProcessor : IPostprocessBuildWithReport
 {
@@ -86,14 +87,10 @@ public class BuildInfoPostProcessor : IPostprocessBuildWithReport
     private StringBuilder GenerateNewName(BuildReport report, string baseFilename)
     {
         StringBuilder newNameBuilder = new StringBuilder(baseFilename);
-
-#if UNITY_6_0_OR_NEWER
-        string buildProfileName = report.buildProfile?.name;
-        if (!string.IsNullOrEmpty(buildProfileName))
-        {
-            newNameBuilder.Append($"_{buildProfileName}");
-        }
-#endif
+       
+        BuildProfile buildProfile = BuildProfile.GetActiveBuildProfile();
+        if (buildProfile)
+            newNameBuilder.Append($"_{buildProfile.name}");
 
         string appVersion = PlayerSettings.bundleVersion;
         if (!string.IsNullOrEmpty(appVersion))
