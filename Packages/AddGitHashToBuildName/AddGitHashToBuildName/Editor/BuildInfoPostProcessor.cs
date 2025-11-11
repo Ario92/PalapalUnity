@@ -87,11 +87,11 @@ public class BuildInfoPostProcessor : IPostprocessBuildWithReport
     private StringBuilder GenerateNewName(BuildReport report, string baseFilename)
     {
         StringBuilder newNameBuilder = new StringBuilder(baseFilename);
-       
+#if UNITY_6000_1_OR_NEWER
         BuildProfile buildProfile = BuildProfile.GetActiveBuildProfile();
         if (buildProfile)
             newNameBuilder.Append($"_{buildProfile.name}");
-
+#endif
         string appVersion = PlayerSettings.bundleVersion;
         if (!string.IsNullOrEmpty(appVersion))
         {
