@@ -1,3 +1,5 @@
+version: 0.0.5
+    - Refactor: Refactor GenerateNewName method to incorporate active build profile for enhanced naming convention
 version: 0.0.4
     - Refactor: Refactor GenerateNewName method to use BuildProfile.GetActiveBuildProfile for improved build profile handling
 version: 0.0.3
