@@ -166,7 +166,7 @@ public class FolderStructureValidator : AssetPostprocessor
                 if (pathParts.Length > 1)
                 {
                     // If the asset is not a C# script, log a warning
-                    if (extension != ".cs")
+                    if (!new[] { ".cs", ".dll", ".asmdef", ".asmref" }.Contains(extension))
                         LogWarning($"{_projectStructureViolationWarningPart}'{assetPath}' in 'Scripts' folder is not a C# script.", assetPath);
                 }
                 // If the asset is not in a subfolder, log a warning
@@ -248,10 +248,10 @@ public class FolderStructureValidator : AssetPostprocessor
 
             if (fileName.StartsWith("T_"))
             {
-                string[] requiredSuffixes = { "_BC", "_N", "_MS", "_H", "_AO", "_E", "_I" }; // BaseColor, Normal, Metallic, Height, AmbientOcclusion, Emission
+                string[] requiredSuffixes = { "_BC", "_N", "_MS", "_H", "_AO", "_E", "_I","_EX" }; // BaseColor, Normal, Metallic, Height, AmbientOcclusion, Emission,exclusion 
                 if (!requiredSuffixes.Any(suffix => fileName.EndsWith(suffix)))
                 {
-                    LogWarning($"{_namingViolationWarningPart}Texture <b>'{fileName}'</b> should end with a <b><color=yellow>suffix like {string.Join(", ", requiredSuffixes)}</color></b>.", assetPath);
+                    LogWarning($"{_namingViolationWarningPart}Texture <b>'{fileName}'</b> should end with a <b><color=yellow>suffix like {string.Join(", ", requiredSuffixes)}['_*_EX' For Custom Usages]</color></b>.", assetPath);
                 }
             }
 

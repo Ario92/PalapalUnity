@@ -1,3 +1,5 @@
+Version 0.0.10
+    - Added: Enhance FolderStructureValidator: Update asset type validation to include additional file extensions and improve texture naming warnings with custom usage suffix.
 Version 0.0.9
     - Added: Enhance texture format validation in FolderStructureValidator
 Version 0.0.8

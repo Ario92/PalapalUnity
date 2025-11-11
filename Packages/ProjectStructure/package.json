@@ -1,6 +1,6 @@
 {
     "name": "com.palapalco.project_structure",
-    "version": "0.0.9",
+    "version": "0.0.10",
     "displayName": "Project Structure Validator & Creator",
     "description": "A powerful tool to create predefined folder hierarchies and validate assets in real-time against naming and location rules. This package helps teams maintain a clean and organized project structure, ensuring consistency and reducing errors.",
     "unity": "2021.3",
