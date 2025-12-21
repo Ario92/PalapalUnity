@@ -4,7 +4,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace PalaPal.ProjectStructure.Editor
+namespace Palapal.ProjectStructure.Editor
 {
 public class FolderValidatorMenu : EditorWindow
 {
@@ -123,7 +123,7 @@ public class FolderValidatorMenu : EditorWindow
         _targetFolders = FolderValidatorSettingsManager.GetFolders();
     }
 
-    [MenuItem("PalaPal/Validate All Folders")]
+    [MenuItem("Palapal/Validate All Folders")]
     public static void ValidateAll()
     {
         var folders = FolderValidatorSettingsManager.GetFolders();

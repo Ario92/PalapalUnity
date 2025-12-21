@@ -1,6 +1,7 @@
 #if UNITY_EDITOR
 using System.Collections.Generic;
 using System.Linq;
+using Palapal.ProjectStructure.Editor;
 using UnityEditor;
 using UnityEngine;
 
@@ -38,6 +39,7 @@ public static class FolderValidatorSettingsManager
             currentFolders.Add(folderPath);
             SaveFolders(currentFolders);
             FolderStructureValidator.ValidateAssetsInPath(folderPath);
+            // Refresh the Menu's cached list (static method) instead of referencing a non-existent Instance
             FolderValidatorMenu.RefreshList();
         }
 

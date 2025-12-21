@@ -1,7 +1,7 @@
 {
   "name": "com.palapalco.issue-console",
   "displayName": "Palapal Issue Console",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "unity": "2021.3",
   "description": "Lightweight Issue Console for capturing and resolving project-specific issues inside the Unity Editor. Provides an API for other packages to report issues and register auto-fix actions.",
   "keywords": ["issue", "console", "editor", "palapal", "validation", "tools"],
@@ -13,5 +13,8 @@
     "type": "git",
     "url": "https://github.com/Ario92/PalapalUnity.git"
   },
+  "changelogUrl": "https://github.com/Ario92/PalapalUnity/blob/master/Assets/Packages/IssueConsole/CHANGELOG.md",
+  "documentationUrl": "https://github.com/Ario92/PalapalUnity/blob/master/Assets/Packages/IssueConsole/README.md",
+  "licensesUrl": "https://github.com/Ario92/PalapalUnity/blob/master/Assets/Packages/IssueConsole/LICENSE.md",
   "license": "MIT"
 }

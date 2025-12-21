@@ -8,8 +8,7 @@ using UnityEngine;
 
 namespace Palapal.IssueConsole.Editor
 {
-    public class IssueConsoleWindow : EditorWindow
-    {
+public class IssueConsoleWindow : EditorWindow
 {
     private List<IssueConsoleEntry> _entries = new List<IssueConsoleEntry>();
     private Vector2 _scroll;
