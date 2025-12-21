@@ -13,3 +13,14 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 
 - Updated documentation to mention the new validator features.
+
+## [0.1.1] - 2025-12-21
+
+### Added
+
+- Bumped package version from `0.1.0` → `0.1.1`.
+- Added or refined package metadata fields (`documentationUrl`, `licensesUrl`, `changelogUrl`) and ensured the `files` list is correct in `package.json`.
+
+### Changed
+
+- Minor documentation and packaging improvements.
