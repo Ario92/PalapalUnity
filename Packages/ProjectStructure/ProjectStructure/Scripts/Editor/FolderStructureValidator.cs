@@ -2,7 +2,9 @@
 
 using UnityEngine;
 using UnityEditor;
+using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -244,7 +246,7 @@ public class FolderStructureValidator : AssetPostprocessor
         // If the parent folder starts with "Arts/Textures", validate the texture naming conventions
         if (parentFolder.StartsWith($"{rootFolder}Arts/Textures"))
         {
-            string[] requiredPrefixes = { "TC_", "RT_" };
+            string[] requiredPrefixes = { "TC_", "RT_","T_" };
 
             if (fileName.StartsWith("T_"))
             {
@@ -281,6 +283,37 @@ public class FolderStructureValidator : AssetPostprocessor
     private static void LogWarning(string message, string assetPath)
     {
         Debug.LogWarning(message, AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(assetPath));
+        TryReportIssueToIssueConsole(message, assetPath);
+    }
+
+    private static void TryReportIssueToIssueConsole(string message, string assetPath)
+    {
+        try
+        {
+            // Attempt to locate the IssueConsole API type via reflection to avoid compile-time dependency
+            var apiType = Type.GetType("Palapal.IssueConsole.Runtime.IssueConsoleAPI, Palapal.IssueConsole.Runtime");
+            if (apiType == null)
+            {
+                apiType = AppDomain.CurrentDomain.GetAssemblies()
+                    .SelectMany(a => a.GetTypes())
+                    .FirstOrDefault(t => t.FullName == "Palapal.IssueConsole.Runtime.IssueConsoleAPI");
+            }
+
+            if (apiType == null) return;
+
+            var reportMethod = apiType.GetMethod("Report", BindingFlags.Public | BindingFlags.Static);
+            if (reportMethod == null) return;
+
+            // build metadata
+            var metadata = new Dictionary<string, string> { { "assetPath", assetPath } };
+
+            // signature: Report(string message, string stackTrace = null, LogType type = LogType.Warning, string source = null, Dictionary<string,string> metadata = null)
+            reportMethod.Invoke(null, new object[] { message, null, LogType.Warning, "FolderStructure", metadata });
+        }
+        catch
+        {
+            // ignore - optional reporting
+        }
     }
 }
 #endif

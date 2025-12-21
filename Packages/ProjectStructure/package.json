@@ -1,6 +1,6 @@
 {
     "name": "com.palapalco.project_structure",
-    "version": "0.0.10",
+    "version": "0.1.0",
     "displayName": "Project Structure Validator & Creator",
     "description": "A powerful tool to create predefined folder hierarchies and validate assets in real-time against naming and location rules. This package helps teams maintain a clean and organized project structure, ensuring consistency and reducing errors.",
     "unity": "2021.3",
@@ -18,8 +18,8 @@
       "name": "Asghar Golkar",
       "email": "golkar.asghar@gmail.com"
     },
-    "changelogUrl": "",
+    "changelogUrl": "https://github.com/Ario92/PalapalUnity/blob/master/Assets/Packages/ProjectStructure/CHANGELOG.md",
     "documentationUrl": "https://github.com/Ario92/UnityStandard/blob/main/README.md",
-    "licensesUrl": ""
+    "licensesUrl": "https://github.com/Ario92/PalapalUnity/blob/master/Assets/Packages/ProjectStructure/LICENSE.md"
   }
   
