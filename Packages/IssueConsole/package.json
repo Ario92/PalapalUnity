@@ -1,7 +1,7 @@
 {
   "name": "com.palapalco.issue_console",
   "displayName": "Palapal Issue Console",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "unity": "2021.3",
   "description": "Lightweight Issue Console for capturing and resolving project-specific issues inside the Unity Editor. Provides an API for other packages to report issues and register auto-fix actions.",
   "keywords": ["issue", "console", "editor", "palapal", "validation", "tools"],
