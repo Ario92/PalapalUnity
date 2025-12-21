@@ -14,6 +14,20 @@ All notable changes to this project will be documented in this file.
 
 - Updated documentation to mention the new validator features.
 
+## [Unreleased]
+- No additional changes.
+
+## [0.1.2] - 2025-01-XX
+
+### Added
+- Added "ConvertToPascalCase" context menu item in Assets menu for converting selected assets to PascalCase naming.
+- Added Undo support for asset renaming operations.
+
+### Changed
+- Improved validation feedback by using Debug.Log instead of EditorUtility.DisplayDialog for better user experience.
+- Enhanced folder validation menu with better error handling and progress reporting.
+- Updated code formatting and organization for better maintainability.
+
 ## [0.1.1] - 2025-12-21
 
 ### Added
