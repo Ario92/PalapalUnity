@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Palapal.Shared;
+using UnityEngine.Assemblies;
 public class FolderStructureValidator : AssetPostprocessor
 {
     // Constants for warning messages
@@ -246,11 +247,11 @@ public class FolderStructureValidator : AssetPostprocessor
         // If the parent folder starts with "Arts/Textures", validate the texture naming conventions
         if (parentFolder.StartsWith($"{rootFolder}Arts/Textures"))
         {
-            string[] requiredPrefixes = { "TC_", "RT_","T_" };
+            string[] requiredPrefixes = { "TC_", "RT_", "T_" };
 
             if (fileName.StartsWith("T_"))
             {
-                string[] requiredSuffixes = { "_BC", "_N", "_MS", "_H", "_AO", "_E", "_I","_EX" }; // BaseColor, Normal, Metallic, Height, AmbientOcclusion, Emission,exclusion 
+                string[] requiredSuffixes = { "_BC", "_N", "_MS", "_H", "_AO", "_E", "_I", "_EX" }; // BaseColor, Normal, Metallic, Height, AmbientOcclusion, Emission,exclusion 
                 if (!requiredSuffixes.Any(suffix => fileName.EndsWith(suffix)))
                 {
                     LogWarning($"{_namingViolationWarningPart}Texture <b>'{fileName}'</b> should end with a <b><color=yellow>suffix like {string.Join(", ", requiredSuffixes)}['_*_EX' For Custom Usages]</color></b>.", assetPath);
@@ -294,7 +295,8 @@ public class FolderStructureValidator : AssetPostprocessor
             var apiType = Type.GetType("Palapal.IssueConsole.Runtime.IssueConsoleAPI, Palapal.IssueConsole.Runtime");
             if (apiType == null)
             {
-                apiType = AppDomain.CurrentDomain.GetAssemblies()
+
+                apiType = CurrentAssemblies.GetLoadedAssemblies()
                     .SelectMany(a => a.GetTypes())
                     .FirstOrDefault(t => t.FullName == "Palapal.IssueConsole.Runtime.IssueConsoleAPI");
             }
