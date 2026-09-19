@@ -14,24 +14,26 @@ namespace Palapal.Shared
         // Define a nested dictionary for multi-level folder structure
         public static readonly Dictionary<string, object> folderHierarchy = new Dictionary<string, object> {
             { "Arts", new Dictionary<string, object> {
-                    { "Fonts", null },
-                    { "Models", null },
-                    { "Materials", null },
-                    { "Textures", null },
-                    { "VFXs", new Dictionary<string, object> {
-                        { "Clips", null },
-                        { "Graphs", null }
-                    }} ,
-                    { "SFXs", null },
-                    { "Animations", new Dictionary<string, object> {
-                        { "Clips", null },
-                        { "Animators", null }
-                    }},
-                }
-            },
+                { "Fonts", null },
+                { "Models", null },
+                { "Materials", null },
+                { "Textures", null },
+                { "Videos", null },
+                { "Graphs", null},
+                { "UIs", new Dictionary<string, object> {
+                    { "Styles", null },
+                    { "Templates", null }
+                }},
+                { "SFXs", null },
+                { "Animations", new Dictionary<string, object> {
+                    { "Clips", null },
+                    { "Animators", null }
+                }}
+            }},
             { "Scripts", new Dictionary<string, object> {
                 { "Editor", null },
                 { "RunTime", null },
+                { "ECS", null },
                 { "ScriptableObjects", null },
                 { "Shaders", null },
                 { "Helpers", null }
@@ -44,8 +46,8 @@ namespace Palapal.Shared
             { "Presets", null },
             { "GameData", new Dictionary<string, object> {
                 { "InputActions", null },
+                { "VolumeProfiles", null },
             }}
-
         };
 
         [MenuItem("Palapal/Create Folder Hierarchy")]
@@ -71,7 +73,7 @@ namespace Palapal.Shared
                         relativePath = "Assets" + relativePath.Substring(Application.dataPath.Length);
                     }
                     FolderValidatorSettingsManager.AddFolderToList(relativePath);
-                    
+
                     AssetDatabase.Refresh();
                     Debug.Log("Folder hierarchy created successfully.", AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(relativePath));
                 }
