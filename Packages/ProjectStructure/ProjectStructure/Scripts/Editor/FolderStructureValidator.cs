@@ -15,6 +15,18 @@ public class FolderStructureValidator : AssetPostprocessor
     // Constants for warning messages
     private const string _projectStructureViolationWarningPart = "<b><color=orange>Project Structure Convention Violation:</color><color=aqua> Asset</color></b> ";
     private const string _namingViolationWarningPart = "<b><color=yellow>Naming Convention Violation:</color></b> ";
+    private static readonly Dictionary<string, List<string>> _searchKeys = new()
+    {
+        { "Textures", new List<string> { ".png", ".jpg", ".jpeg", ".tif", ".tga", ".psd", ".exr", ".hdr", ".rendertexture" } },
+        { "TexturesPrefix", new List<string> {"TC_", "RT_", "T_"  } },
+        { "TexturesSuffixes", new List<string> {"_BC", "_N", "_MS", "_H", "_AO", "_E", "_I", "_EX"} },
+        { "Models", new List<string> { ".fbx", ".obj" } },
+        { "SFXs", new List<string> { ".wav", ".mp3", ".ogg", ".mixer"} },
+        { "SFXsSuffixes", new List<string> {  "_S", "_D" } },
+        { "Scripts", new List<string> { ".cs", ".dll", ".asmdef", ".asmref"} },
+        { "GameData", new List<string> { ".asset", ".inputactions", ".physicmaterial"} },
+        { "Assembly", new List<string> { ".asmdef", ".asmref" } },
+    };
     private static List<string> _folderNameWarning = new();
     // Method called after all assets have been imported
     private static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
@@ -141,17 +153,17 @@ public class FolderStructureValidator : AssetPostprocessor
                     {
                         case "Textures":
                             // If the asset is not a common image format, log a warning
-                            if (!new[] { ".png", ".jpg", ".jpeg", ".tif", ".tga", ".psd", ".exr", ".hdr", ".rendertexture" }.Contains(extension))
+                            if (!_searchKeys["Textures"].Contains(extension))
                                 LogWarning($"{_projectStructureViolationWarningPart}'{assetPath}' in 'Arts/Textures' is not a common image format.", assetPath);
                             break;
                         case "Models":
                             // If the asset is not a common model format, log a warning
-                            if (!new[] { ".fbx", ".obj" }.Contains(extension))
+                            if (!_searchKeys["Models"].Contains(extension))
                                 LogWarning($"{_projectStructureViolationWarningPart}'{assetPath}' in 'Arts/Models' is not a common model format.", assetPath);
                             break;
                         case "SFXs":
                             // If the asset is not a common audio format, log a warning
-                            if (!new[] { ".wav", ".mp3", ".ogg", ".mixer" }.Contains(extension))
+                            if (!_searchKeys["SFXs"].Contains(extension))
                                 LogWarning($"{_projectStructureViolationWarningPart}'{assetPath}' in 'Arts/SFXs' is not a common audio format.", assetPath);
                             break;
                         case "Materials":
@@ -172,7 +184,7 @@ public class FolderStructureValidator : AssetPostprocessor
                 if (pathParts.Length > 1)
                 {
                     // If the asset is not a C# script, log a warning
-                    if (!new[] { ".cs", ".dll", ".asmdef", ".asmref" }.Contains(extension))
+                    if (!_searchKeys["Scripts"].Contains(extension))
                         LogWarning($"{_projectStructureViolationWarningPart}'{assetPath}' in 'Scripts' folder is not a C# script.", assetPath);
                 }
                 // If the asset is not in a subfolder, log a warning
@@ -191,7 +203,7 @@ public class FolderStructureValidator : AssetPostprocessor
                 break;
             case "GameData":
                 // If the asset is not a valid data asset, log a warning
-                if (!new[] { ".asset", ".inputactions", ".physicmaterial" }.Contains(extension))
+                if (!_searchKeys["GameData"].Contains(extension))
                     LogWarning($"{_projectStructureViolationWarningPart}'{assetPath}' in 'GameData' is not a valid data asset.", assetPath);
                 break;
         }
@@ -208,8 +220,19 @@ public class FolderStructureValidator : AssetPostprocessor
         // Get the extension
         string extension = Path.GetExtension(assetPath).ToLower();
 
+
+        if (_searchKeys["Assembly"].Contains(extension))
+        {
+            foreach (var part in fileName.Split("."))
+                if (!IsPascalCase(part))
+                {
+                    LogWarning($"00part00{_namingViolationWarningPart}<b><color=cyan>Asset name</color> '{fileName}'</b> in '{assetPath}' is not in PascalCase\nPATH: {assetPath}.", assetPath);
+                    break;
+                }
+        }
+
         // If the file name is not in PascalCase, log a warning
-        if (!IsPascalCase(fileName))
+        else if (!IsPascalCase(fileName))
         {
             LogWarning($"{_namingViolationWarningPart}<b><color=cyan>Asset name</color> '{fileName}'</b> in '{assetPath}' is not in PascalCase\nPATH: {assetPath}.", assetPath);
         }
@@ -245,31 +268,31 @@ public class FolderStructureValidator : AssetPostprocessor
             // If the extension is not ".mixer", validate the suffix
             if (extension != ".mixer")
             {
-                string[] requiredSuffixes = { "_S", "_D" };
+                // string[] requiredSuffixes = { "_S", "_D" };
                 // If the file name does not end with a required suffix, log a warning
-                if (!requiredSuffixes.Any(suffix => fileName.EndsWith(suffix)))
+                if (!_searchKeys["SFXsSuffixes"].Any(suffix => fileName.EndsWith(suffix)))
                 {
-                    LogWarning($"{_namingViolationWarningPart}SFX <b>'{fileName}'</b> should end with a <b><color=yellow>suffix like {string.Join(", ", requiredSuffixes)}</color></b>\nPATH: {assetPath}.", assetPath);
+                    LogWarning($"{_namingViolationWarningPart}SFX <b>'{fileName}'</b> should end with a <b><color=yellow>suffix like {string.Join(", ", _searchKeys["SFXsSuffixes"])}</color></b>\nPATH: {assetPath}.", assetPath);
                 }
             }
         }
         // If the parent folder starts with "Arts/Textures", validate the texture naming conventions
         if (parentFolder.StartsWith($"{rootFolder}Arts/Textures"))
         {
-            string[] requiredPrefixes = { "TC_", "RT_", "T_" };
+            // string[] requiredPrefixes = { "TC_", "RT_", "T_" };
 
             if (fileName.StartsWith("T_"))
             {
-                string[] requiredSuffixes = { "_BC", "_N", "_MS", "_H", "_AO", "_E", "_I", "_EX" }; // BaseColor, Normal, Metallic, Height, AmbientOcclusion, Emission,exclusion 
-                if (!requiredSuffixes.Any(suffix => fileName.EndsWith(suffix)))
+                // string[] requiredSuffixes = { "_BC", "_N", "_MS", "_H", "_AO", "_E", "_I", "_EX" }; // BaseColor, Normal, Metallic, Height, AmbientOcclusion, Emission,exclusion 
+                if (!_searchKeys["TexturesSuffixes"].Any(suffix => fileName.EndsWith(suffix)))
                 {
-                    LogWarning($"{_namingViolationWarningPart}Texture <b>'{fileName}'</b> should end with a <b><color=yellow>suffix like {string.Join(", ", requiredSuffixes)}['_*_EX' For Custom Usages]</color></b>\nPATH: {assetPath}.", assetPath);
+                    LogWarning($"{_namingViolationWarningPart}Texture <b>'{fileName}'</b> should end with a <b><color=yellow>suffix like {string.Join(", ", _searchKeys["TexturesSuffixes"])}['_*_EX' For Custom Usages]</color></b>\nPATH: {assetPath}.", assetPath);
                 }
             }
 
-            else if (!requiredPrefixes.Any(suffix => fileName.StartsWith(suffix)))
+            else if (!_searchKeys["TexturesPrefix"].Any(suffix => fileName.StartsWith(suffix)))
             {
-                LogWarning($"{_namingViolationWarningPart}Texture <b>'{fileName}'</b> should start with a prefix like <b><color=yellow>{string.Join(", ", requiredPrefixes)}</color></b>\nPATH: {assetPath}.", assetPath);
+                LogWarning($"{_namingViolationWarningPart}Texture <b>'{fileName}'</b> should start with a prefix like <b><color=yellow>{string.Join(", ", _searchKeys["TexturesPrefix"])}</color></b>\nPATH: {assetPath}.", assetPath);
             }
         }
     }
