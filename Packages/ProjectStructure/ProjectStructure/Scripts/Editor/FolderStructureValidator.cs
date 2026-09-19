@@ -208,7 +208,7 @@ public class FolderStructureValidator : AssetPostprocessor
         // If the file name is not in PascalCase, log a warning
         if (!IsPascalCase(fileName))
         {
-            LogWarning($"{_namingViolationWarningPart}<b><color=cyan>Asset name</color> '{fileName}'</b> in '{assetPath}' is not in PascalCase.", assetPath);
+            LogWarning($"{_namingViolationWarningPart}<b><color=cyan>Asset name</color> '{fileName}'</b> in '{assetPath}' is not in PascalCase\nPATH: {assetPath}.", assetPath);
         }
 
         // Loop through each part of the path and validate it
@@ -217,7 +217,7 @@ public class FolderStructureValidator : AssetPostprocessor
             // If the part is not in PascalCase, log a warning
             if (!IsPascalCase(pathParts[i]))
             {
-                LogWarning($"{_namingViolationWarningPart}<b><color=red>Folder name</color> '{pathParts[i]}'</b> in '{assetPath}' is not in PascalCase.", assetPath);
+                LogWarning($"{_namingViolationWarningPart}<b><color=red>Folder name</color> '{pathParts[i]}'</b> in '{assetPath}' is not in PascalCase\nPATH: {assetPath}.", assetPath);
             }
         }
 
@@ -227,7 +227,7 @@ public class FolderStructureValidator : AssetPostprocessor
             // If the file name does not start with "SM_" or "DM_", log a warning
             if (!fileName.StartsWith("SM_") && !fileName.StartsWith("DM_"))
             {
-                LogWarning($"{_namingViolationWarningPart}Model <b>'{fileName}'</b> should start with a prefix like <b><color=yellow>'SM_' (Static Mesh) or 'DM_' (Dynamic Mesh)</color></b>.", assetPath);
+                LogWarning($"{_namingViolationWarningPart}Model <b>'{fileName}'</b> should start with a prefix like <b><color=yellow>'SM_' (Static Mesh) or 'DM_' (Dynamic Mesh)</color></b>\nPATH: {assetPath}.", assetPath);
             }
         }
         // If the parent folder starts with "Arts/SFXs", validate the SFX naming conventions
@@ -240,7 +240,7 @@ public class FolderStructureValidator : AssetPostprocessor
                 // If the file name does not end with a required suffix, log a warning
                 if (!requiredSuffixes.Any(suffix => fileName.EndsWith(suffix)))
                 {
-                    LogWarning($"{_namingViolationWarningPart}SFX <b>'{fileName}'</b> should end with a <b><color=yellow>suffix like {string.Join(", ", requiredSuffixes)}</color></b>.", assetPath);
+                    LogWarning($"{_namingViolationWarningPart}SFX <b>'{fileName}'</b> should end with a <b><color=yellow>suffix like {string.Join(", ", requiredSuffixes)}</color></b>\nPATH: {assetPath}.", assetPath);
                 }
             }
         }
@@ -254,13 +254,13 @@ public class FolderStructureValidator : AssetPostprocessor
                 string[] requiredSuffixes = { "_BC", "_N", "_MS", "_H", "_AO", "_E", "_I", "_EX" }; // BaseColor, Normal, Metallic, Height, AmbientOcclusion, Emission,exclusion 
                 if (!requiredSuffixes.Any(suffix => fileName.EndsWith(suffix)))
                 {
-                    LogWarning($"{_namingViolationWarningPart}Texture <b>'{fileName}'</b> should end with a <b><color=yellow>suffix like {string.Join(", ", requiredSuffixes)}['_*_EX' For Custom Usages]</color></b>.", assetPath);
+                    LogWarning($"{_namingViolationWarningPart}Texture <b>'{fileName}'</b> should end with a <b><color=yellow>suffix like {string.Join(", ", requiredSuffixes)}['_*_EX' For Custom Usages]</color></b>\nPATH: {assetPath}.", assetPath);
                 }
             }
 
             else if (!requiredPrefixes.Any(suffix => fileName.StartsWith(suffix)))
             {
-                LogWarning($"{_namingViolationWarningPart}Texture <b>'{fileName}'</b> should start with a prefix like <b><color=yellow>{string.Join(", ", requiredPrefixes)}</color></b>.", assetPath);
+                LogWarning($"{_namingViolationWarningPart}Texture <b>'{fileName}'</b> should start with a prefix like <b><color=yellow>{string.Join(", ", requiredPrefixes)}</color></b>\nPATH: {assetPath}.", assetPath);
             }
         }
     }
