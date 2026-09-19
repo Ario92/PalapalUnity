@@ -5,7 +5,13 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 - No additional changes.
 
-## [0.1.2] - 2025-01-XX
+## [0.1.4] - 2026-09-19
+- Edit (Folder Hierarchy): change folder structure
+- Edit (refactor validator): centralize asset extension and prefix lookups
+- Edit (validator): prevent duplicate folder naming warnings
+- Edit (refactor validator): include asset path in naming violation warnings
+- Edit (fix project structure): correct error message terminology in validator
+- Edit (refactor project structure): improve assembly type lookup and fix formatting
 
 ### Added
 - Added "ConvertToPascalCase" context menu item in Assets menu for converting selected assets to PascalCase naming.
