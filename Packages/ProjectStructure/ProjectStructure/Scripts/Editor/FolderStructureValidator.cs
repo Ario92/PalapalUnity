@@ -15,7 +15,7 @@ public class FolderStructureValidator : AssetPostprocessor
     // Constants for warning messages
     private const string _projectStructureViolationWarningPart = "<b><color=orange>Project Structure Convention Violation:</color><color=aqua> Asset</color></b> ";
     private const string _namingViolationWarningPart = "<b><color=yellow>Naming Convention Violation:</color></b> ";
-
+    private static List<string> _folderNameWarning = new();
     // Method called after all assets have been imported
     private static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
     {
@@ -48,6 +48,9 @@ public class FolderStructureValidator : AssetPostprocessor
     // Method to validate assets
     private static void ValidateAssets(string[] assets)
     {
+        // Clear the folder name warning list
+        _folderNameWarning.Clear();
+
         // Get the target folder paths from the settings manager
         var targetFolderPaths = FolderValidatorSettingsManager.GetFolders();
 
@@ -217,7 +220,13 @@ public class FolderStructureValidator : AssetPostprocessor
             // If the part is not in PascalCase, log a warning
             if (!IsPascalCase(pathParts[i]))
             {
-                LogWarning($"{_namingViolationWarningPart}<b><color=red>Folder name</color> '{pathParts[i]}'</b> in '{assetPath}' is not in PascalCase\nPATH: {assetPath}.", assetPath);
+
+                var folderPath = rootFolder + string.Join("/", pathParts.Take(i + 1).ToArray());
+                if (_folderNameWarning.Contains(folderPath))
+                    continue;
+
+                _folderNameWarning.Add(folderPath);
+                LogWarning($"{_namingViolationWarningPart}<b><color=red>Folder name</color> '{pathParts[i]}'</b> is not in PascalCase\nPATH: {folderPath}.", folderPath);
             }
         }
 
@@ -291,7 +300,7 @@ public class FolderStructureValidator : AssetPostprocessor
     {
         try
         {
-            // Attempt to locate the IssueConsole API type via reflection to avoid compile-time dependency
+            // AtfolderNamet to locate the IssueConsole API type via reflection to avoid compile-time dependency
             var apiType = Type.GetType("Palapal.IssueConsole.Runtime.IssueConsoleAPI, Palapal.IssueConsole.Runtime");
             if (apiType == null)
             {
