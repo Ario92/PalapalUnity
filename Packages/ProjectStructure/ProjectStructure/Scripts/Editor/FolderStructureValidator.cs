@@ -260,7 +260,7 @@ public class FolderStructureValidator : AssetPostprocessor
 
             else if (!requiredPrefixes.Any(suffix => fileName.StartsWith(suffix)))
             {
-                LogWarning($"{_namingViolationWarningPart}Texture <b>'{fileName}'</b> should start with a <b><color=yellow>suffix like {string.Join(", ", requiredPrefixes)}</color></b>.", assetPath);
+                LogWarning($"{_namingViolationWarningPart}Texture <b>'{fileName}'</b> should start with a prefix like <b><color=yellow>{string.Join(", ", requiredPrefixes)}</color></b>.", assetPath);
             }
         }
     }
