@@ -1,0 +1,9 @@
+﻿<Solution>
+  <Project Path="UnityEditor.TestRunner.csproj" />
+  <Project Path="UnityEngine.TestRunner.csproj" />
+  <Project Path="Unity.VisualStudio.Editor.csproj" />
+  <Project Path="Unity.Rider.Editor.csproj" />
+  <Project Path="Palapal.IssueConsole.Editor.csproj" />
+  <Project Path="Palapal.IssueConsole.Runtime.csproj" />
+  <Project Path="Assembly-CSharp-Editor.csproj" />
+</Solution>
