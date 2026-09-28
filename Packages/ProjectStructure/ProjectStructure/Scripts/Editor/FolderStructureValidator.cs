@@ -9,7 +9,9 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Palapal.Shared;
+#if Unity_6_6_or_NEWER
 using UnityEngine.Assemblies;
+#endif
 public class FolderStructureValidator : AssetPostprocessor
 {
     // Constants for warning messages
@@ -331,6 +333,7 @@ public class FolderStructureValidator : AssetPostprocessor
         {
             // AtfolderNamet to locate the IssueConsole API type via reflection to avoid compile-time dependency
             var apiType = Type.GetType("Palapal.IssueConsole.Runtime.IssueConsoleAPI, Palapal.IssueConsole.Runtime");
+#if Unity_6_6_or_NEWER
             if (apiType == null)
             {
 
@@ -338,7 +341,7 @@ public class FolderStructureValidator : AssetPostprocessor
                     .SelectMany(a => a.GetTypes())
                     .FirstOrDefault(t => t.FullName == "Palapal.IssueConsole.Runtime.IssueConsoleAPI");
             }
-
+#endif
             if (apiType == null) return;
 
             var reportMethod = apiType.GetMethod("Report", BindingFlags.Public | BindingFlags.Static);
