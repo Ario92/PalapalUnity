@@ -18,7 +18,7 @@ jobs:
     steps:
       # مرحله ۱: کدها را دانلود می‌کند
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       # مرحله ۲: نسخه را از متن کامیت استخراج کرده، تگ را می‌سازد و نسخه را به عنوان خروجی ثبت می‌کند
       - name: Extract Tag Version and Create Tag
