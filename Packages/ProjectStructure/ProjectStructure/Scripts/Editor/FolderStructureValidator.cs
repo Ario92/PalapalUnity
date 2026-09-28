@@ -19,7 +19,7 @@ public class FolderStructureValidator : AssetPostprocessor
     private const string _namingViolationWarningPart = "<b><color=yellow>Naming Convention Violation:</color></b> ";
     private static readonly Dictionary<string, List<string>> _searchKeys = new()
     {
-        { "UIs", new List<string> { ".uss", ".uxml", ".asset" } },
+        { "UIs", new List<string> { ".uss", ".uxml", ".asset",".tss" } },
         { "Textures", new List<string> { ".png", ".jpg", ".jpeg", ".tif", ".tga", ".psd", ".exr", ".hdr", ".rendertexture" } },
         { "TexturesPrefix", new List<string> {"TC_", "RT_", "T_" } },
         { "TexturesSuffixes", new List<string> {"_BC", "_N", "_MS", "_H", "_AO", "_E", "_I", "_EX"} },
